@@ -12,20 +12,22 @@ enum ServiceStatus: string
     case AwaitingParts = 'awaiting_parts';
     case RepairCompleted = 'repair_completed';
     case AwaitingPayment = 'awaiting_payment';
+    case PaymentReceived = 'payment_received';
     case DeviceCollected = 'device_collected';
 
     public function label(): string
     {
         return match ($this) {
-            self::AwaitingEvaluation => 'Awaiting Evaluation',
-            self::InEvaluation => 'In Evaluation',
-            self::AwaitingApproval => 'Awaiting Customer Approval',
-            self::Approved => 'Approved',
-            self::InRepair => 'In Repair',
-            self::AwaitingParts => 'Awaiting Parts',
-            self::RepairCompleted => 'Repair Completed',
-            self::AwaitingPayment => 'Awaiting Payment',
-            self::DeviceCollected => 'Device Collected',
+            self::AwaitingEvaluation => 'Aguardando avaliação',
+            self::InEvaluation => 'Em avaliação',
+            self::AwaitingApproval => 'Aguardando aprovação do cliente',
+            self::Approved => 'Serviço aprovado',
+            self::InRepair => 'Em reparo',
+            self::AwaitingParts => 'Aguardando peças',
+            self::RepairCompleted => 'Reparo concluído',
+            self::AwaitingPayment => 'Aguardando Pagamento',
+            self::PaymentReceived => 'Pagamento recebido',
+            self::DeviceCollected => 'Aparelho coletado',
         };
     }
 }
