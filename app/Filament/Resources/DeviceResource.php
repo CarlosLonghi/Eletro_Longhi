@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DeviceResource\Pages;
 use App\Filament\Resources\DeviceResource\RelationManagers;
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Device;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -37,14 +39,16 @@ class DeviceResource extends Resource
                     ->label('Imagem')
                     ->image()
                     ->required(),
-                Forms\Components\TextInput::make('category_id')
+                Forms\Components\Select::make('category_id')
                     ->label('Categoria')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('customer_id')
+                    ->options(Category::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+                Forms\Components\Select::make('customer_id')
                     ->label('Cliente')
-                    ->required()
-                    ->numeric(),
+                    ->options(Customer::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
@@ -64,12 +68,13 @@ class DeviceResource extends Resource
                     ->label('Categoria')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('customer_id')
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Cliente')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Entrada')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -84,9 +89,7 @@ class DeviceResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 
