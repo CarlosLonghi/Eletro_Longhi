@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
-use App\Models\Device;
+use App\Models\Category;
 use App\Models\Service;
 use App\ServiceStatus;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,51 +29,91 @@ class ServiceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('device_id')
-                    ->label('Dispositivo')
-                    ->options(Device::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
-                Forms\Components\TextInput::make('price')
-                    ->label('Preço')
-                    ->prefix('R$')
-                    ->default(50)
-                    ->numeric()
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
+                Section::make('Dados do Cliente')->schema([
+                    Forms\Components\TextInput::make('customer_name')
+                        ->label('Nome')
+                        ->required(),
+                    Forms\Components\TextInput::make('customer_phone')
+                        ->label('Telefone')
+                        ->tel()
+                        ->required(),
+                    Forms\Components\TextInput::make('customer_email')
+                        ->label('Email')
+                        ->email()
+                        ->columnSpan(['sm' => 2, 'lg' => 1]),
+                ])->columns(['sm' => 2, 'lg' => 3]),
 
-                        'in_evaluation' =>
-                        ServiceStatus::InEvaluation->label(),
+                Section::make('Dados do Aparelho')->schema([
+                    Forms\Components\TextInput::make('device_name')
+                        ->label('Nome')
+                        ->required()
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                    Forms\Components\Select::make('category_id')
+                        ->label('Categoria')
+                        ->options(Category::all()->pluck('name', 'id'))
+                        ->selectablePlaceholder(false)
+                        ->required()
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                    Forms\Components\Textarea::make('device_description')
+                        ->label('Descrição')
+                        ->rows(4)
+                        ->autosize()
+                        ->maxLength(255)
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                    Forms\Components\FileUpload::make('device_image')
+                        ->label('Foto')
+                        ->image()
+                        ->required()
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                ])->columns(['sm' => 2]),
 
-                        'awaiting_approval' =>
-                        ServiceStatus::AwaitingApproval->label(),
 
-                        'approved' =>
-                        ServiceStatus::Approved->label(),
+                Section::make('Serviço')->schema([
+                    Forms\Components\TextInput::make('price')
+                        ->label('Preço')
+                        ->prefix('R$')
+                        ->default(50)
+                        ->numeric()
+                        ->required()
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                    Forms\Components\Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
 
-                        'in_repair' =>
-                        ServiceStatus::InRepair->label(),
+                            'in_evaluation' =>
+                            ServiceStatus::InEvaluation->label(),
 
-                        'awaiting_parts' =>
-                        ServiceStatus::AwaitingParts->label(),
+                            'awaiting_approval' =>
+                            ServiceStatus::AwaitingApproval->label(),
 
-                        'repair_completed' =>
-                        ServiceStatus::RepairCompleted->label(),
+                            'approved' =>
+                            ServiceStatus::Approved->label(),
 
-                        'awaiting_payment' =>
-                        ServiceStatus::AwaitingPayment->label(),
+                            'in_repair' =>
+                            ServiceStatus::InRepair->label(),
 
-                        'payment_received' =>
-                        ServiceStatus::PaymentReceived->label(),
+                            'awaiting_parts' =>
+                            ServiceStatus::AwaitingParts->label(),
 
-                        'device_collected' =>
-                        ServiceStatus::DeviceCollected->label(),
-                    ])
-                    ->default('awaiting_evaluation')
-                    ->required(),
+                            'repair_completed' =>
+                            ServiceStatus::RepairCompleted->label(),
+
+                            'awaiting_payment' =>
+                            ServiceStatus::AwaitingPayment->label(),
+
+                            'payment_received' =>
+                            ServiceStatus::PaymentReceived->label(),
+
+                            'device_collected' =>
+                            ServiceStatus::DeviceCollected->label(),
+                        ])
+                        ->default('awaiting_evaluation')
+                        ->selectablePlaceholder(false)
+                        ->required()
+                        ->columnSpan(['sm' => 2, 'md' => 1]),
+                ])->columns(['sm' => 2]),
+
             ]);
     }
 
@@ -79,20 +121,23 @@ class ServiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('device.name')
-                    ->label('Dispositivo')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\ImageColumn::make('device.image')
+                Tables\Columns\ImageColumn::make('device_image')
                     ->label('Imagem'),
-                Tables\Columns\TextColumn::make('device.customer.name')
-                    ->label('Cliente')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('device_name')
+                    ->label('Dispositivo')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('customer_name')
+                    ->label('Nome do cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('customer_phone')
+                    ->label('Telefone')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('price')
-                    ->label('Preço')
-                    ->money('BRL', true)
-                    ->sortable(),
+                    ->label('Valor')
+                    ->money('BRL', true),
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
                     ->options([
@@ -134,14 +179,55 @@ class ServiceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Atualizado em')
+                    ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
+
+                        'in_evaluation' =>
+                        ServiceStatus::InEvaluation->label(),
+
+                        'awaiting_approval' =>
+                        ServiceStatus::AwaitingApproval->label(),
+
+                        'approved' =>
+                        ServiceStatus::Approved->label(),
+
+                        'in_repair' =>
+                        ServiceStatus::InRepair->label(),
+
+                        'awaiting_parts' =>
+                        ServiceStatus::AwaitingParts->label(),
+
+                        'repair_completed' =>
+                        ServiceStatus::RepairCompleted->label(),
+
+                        'awaiting_payment' =>
+                        ServiceStatus::AwaitingPayment->label(),
+
+                        'payment_received' =>
+                        ServiceStatus::PaymentReceived->label(),
+
+                        'device_collected' =>
+                        ServiceStatus::DeviceCollected->label(),
+                    ])
+                    ->selectablePlaceholder(false),
+
+                Tables\Filters\SelectFilter::make('category.name')
+                    ->label('Categoria')
+                    ->options(Category::all()->pluck('name', 'id'))
+                    ->relationship('category', 'name')
+                    ->placeholder('Todas')
+                    ->indicator('Categoria'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

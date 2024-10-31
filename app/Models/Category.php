@@ -12,12 +12,12 @@ class Category extends Model
     protected $guarded = ['id'];
 
     /**
-     * The devices that belong to the category.
+     * The service that belong to the category.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function device()
+    public function service()
     {
-        return $this->hasMany(Device::class);
+        return $this->hasMany(Service::class);
     }
 }

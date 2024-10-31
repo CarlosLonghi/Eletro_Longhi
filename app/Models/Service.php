@@ -13,13 +13,13 @@ class Service extends Model
     protected $guarded = ['id'];
 
     /**
-     * Get the device associated with the service.
+     * Get the category associated with the service.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function device()
+    public function category()
     {
-        return $this->belongsTo(Device::class);
+        return $this->belongsTo(Category::class);
     }
 
     /**
