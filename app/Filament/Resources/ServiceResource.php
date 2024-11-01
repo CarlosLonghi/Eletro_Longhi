@@ -7,9 +7,8 @@ use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Service;
-use App\ServiceStatus;
+use App\Enums\ServiceStatus;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -40,36 +39,7 @@ class ServiceResource extends Resource
                         ->columnSpan(['sm' => 2, 'md' => 1]),
                     Forms\Components\Select::make('status')
                         ->label('Status')
-                        ->options([
-                            'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
-
-                            'in_evaluation' =>
-                            ServiceStatus::InEvaluation->label(),
-
-                            'awaiting_approval' =>
-                            ServiceStatus::AwaitingApproval->label(),
-
-                            'approved' =>
-                            ServiceStatus::Approved->label(),
-
-                            'in_repair' =>
-                            ServiceStatus::InRepair->label(),
-
-                            'awaiting_parts' =>
-                            ServiceStatus::AwaitingParts->label(),
-
-                            'repair_completed' =>
-                            ServiceStatus::RepairCompleted->label(),
-
-                            'awaiting_payment' =>
-                            ServiceStatus::AwaitingPayment->label(),
-
-                            'payment_received' =>
-                            ServiceStatus::PaymentReceived->label(),
-
-                            'device_collected' =>
-                            ServiceStatus::DeviceCollected->label(),
-                        ])
+                        ->options(ServiceStatus::class)
                         ->default('awaiting_evaluation')
                         ->selectablePlaceholder(false)
                         ->required()
@@ -122,9 +92,9 @@ class ServiceResource extends Resource
                         ->label('Acessórios do aparelho')
                         ->options([
                             'cable' => 'Cabo de Energia',
+                            'control' => 'Controle',
                             'wall_support' => 'Suporte de Parede',
                             'shelf_support' => 'Suporte de Estante',
-                            'pendrive' => 'Pendrive',
                             'others' => 'Outros (informe na descrição)',
                         ])
                         ->columnSpan(['sm' => 3, 'md' => 1]),
@@ -167,36 +137,7 @@ class ServiceResource extends Resource
                     ->money('BRL', true),
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
-                    ->options([
-                        'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
-
-                        'in_evaluation' =>
-                        ServiceStatus::InEvaluation->label(),
-
-                        'awaiting_approval' =>
-                        ServiceStatus::AwaitingApproval->label(),
-
-                        'approved' =>
-                        ServiceStatus::Approved->label(),
-
-                        'in_repair' =>
-                        ServiceStatus::InRepair->label(),
-
-                        'awaiting_parts' =>
-                        ServiceStatus::AwaitingParts->label(),
-
-                        'repair_completed' =>
-                        ServiceStatus::RepairCompleted->label(),
-
-                        'awaiting_payment' =>
-                        ServiceStatus::AwaitingPayment->label(),
-
-                        'payment_received' =>
-                        ServiceStatus::PaymentReceived->label(),
-
-                        'device_collected' =>
-                        ServiceStatus::DeviceCollected->label(),
-                    ])
+                    ->options(ServiceStatus::class)
                     ->selectablePlaceholder(false)
                     ->sortable()
                     ->searchable(),
@@ -214,36 +155,7 @@ class ServiceResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
-                    ->options([
-                        'awaiting_evaluation' => ServiceStatus::AwaitingEvaluation->label(),
-
-                        'in_evaluation' =>
-                        ServiceStatus::InEvaluation->label(),
-
-                        'awaiting_approval' =>
-                        ServiceStatus::AwaitingApproval->label(),
-
-                        'approved' =>
-                        ServiceStatus::Approved->label(),
-
-                        'in_repair' =>
-                        ServiceStatus::InRepair->label(),
-
-                        'awaiting_parts' =>
-                        ServiceStatus::AwaitingParts->label(),
-
-                        'repair_completed' =>
-                        ServiceStatus::RepairCompleted->label(),
-
-                        'awaiting_payment' =>
-                        ServiceStatus::AwaitingPayment->label(),
-
-                        'payment_received' =>
-                        ServiceStatus::PaymentReceived->label(),
-
-                        'device_collected' =>
-                        ServiceStatus::DeviceCollected->label(),
-                    ])
+                    ->options(ServiceStatus::class)
                     ->selectablePlaceholder(false),
 
                 Tables\Filters\SelectFilter::make('category.name')

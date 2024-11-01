@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\ServiceStatus;
+use App\Enums\ServiceStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
