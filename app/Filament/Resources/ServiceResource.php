@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Service;
 use App\ServiceStatus;
@@ -29,45 +30,6 @@ class ServiceResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Dados do Cliente')->schema([
-                    Forms\Components\TextInput::make('customer_name')
-                        ->label('Nome')
-                        ->required(),
-                    Forms\Components\TextInput::make('customer_phone')
-                        ->label('Telefone')
-                        ->tel()
-                        ->required(),
-                    Forms\Components\TextInput::make('customer_email')
-                        ->label('Email')
-                        ->email()
-                        ->columnSpan(['sm' => 2, 'lg' => 1]),
-                ])->columns(['sm' => 2, 'lg' => 3]),
-
-                Section::make('Dados do Aparelho')->schema([
-                    Forms\Components\TextInput::make('device_name')
-                        ->label('Nome')
-                        ->required()
-                        ->columnSpan(['sm' => 2, 'md' => 1]),
-                    Forms\Components\Select::make('category_id')
-                        ->label('Categoria')
-                        ->options(Category::all()->pluck('name', 'id'))
-                        ->selectablePlaceholder(false)
-                        ->required()
-                        ->columnSpan(['sm' => 2, 'md' => 1]),
-                    Forms\Components\Textarea::make('device_description')
-                        ->label('Descrição')
-                        ->rows(4)
-                        ->autosize()
-                        ->maxLength(255)
-                        ->columnSpan(['sm' => 2, 'md' => 1]),
-                    Forms\Components\FileUpload::make('device_image')
-                        ->label('Foto')
-                        ->image()
-                        ->required()
-                        ->columnSpan(['sm' => 2, 'md' => 1]),
-                ])->columns(['sm' => 2]),
-
-
                 Section::make('Serviço')->schema([
                     Forms\Components\TextInput::make('price')
                         ->label('Preço')
@@ -114,6 +76,71 @@ class ServiceResource extends Resource
                         ->columnSpan(['sm' => 2, 'md' => 1]),
                 ])->columns(['sm' => 2]),
 
+                Section::make('Dados do Cliente')->schema([
+                    Forms\Components\TextInput::make('customer_name')
+                        ->label('Nome')
+                        ->placeholder('Digite o nome')
+                        ->maxLength(255)
+                        ->required(),
+                    Forms\Components\TextInput::make('customer_phone')
+                        ->label('Telefone')
+                        ->placeholder('Digite o telefone')
+                        ->tel()
+                        ->maxLength(255)
+                        ->required(),
+                    Forms\Components\TextInput::make('customer_email')
+                        ->label('Email')
+                        ->placeholder('Digite o email')
+                        ->email()
+                        ->maxLength(255)
+                        ->columnSpan(['sm' => 2, 'lg' => 1]),
+                ])->columns(['sm' => 2, 'lg' => 3]),
+
+                Section::make('Dados do Aparelho')->schema([
+                    Forms\Components\Select::make('brand_id')
+                        ->label('Marca')
+                        ->placeholder('Selecione uma marca')
+                        ->options(Brand::all()->pluck('name', 'id'))
+                        ->selectablePlaceholder(false)
+                        ->searchable()
+                        ->required()
+                        ->columnSpan(['sm' => 1, 'md' => 1]),
+                    Forms\Components\TextInput::make('device_model')
+                        ->label('Modelo')
+                        ->placeholder('Digite o modelo')
+                        ->maxLength(255)
+                        ->required()
+                        ->columnSpan(['sm' => 1, 'md' => 1]),
+                    Forms\Components\Select::make('category_id')
+                        ->label('Categoria')
+                        ->options(Category::all()->pluck('name', 'id'))
+                        ->default(Category::first()->id)
+                        ->selectablePlaceholder(false)
+                        ->required()
+                        ->columnSpan(['sm' => 1, 'md' => 1]),
+                    Forms\Components\CheckboxList::make('device_accessories')
+                        ->label('Acessórios do aparelho')
+                        ->options([
+                            'cable' => 'Cabo de Energia',
+                            'wall_support' => 'Suporte de Parede',
+                            'shelf_support' => 'Suporte de Estante',
+                            'pendrive' => 'Pendrive',
+                            'others' => 'Outros (informe na descrição)',
+                        ])
+                        ->columnSpan(['sm' => 3, 'md' => 1]),
+                    Forms\Components\FileUpload::make('device_image')
+                        ->label('Foto')
+                        ->image()
+                        ->required()
+                        ->columnSpan(['sm' => 3, 'md' => 1]),
+                    Forms\Components\Textarea::make('device_description')
+                        ->label('Descrição')
+                        ->placeholder('Informações adicionais sobre o aparelho ou acessórios...')
+                        ->rows(4)
+                        ->autosize()
+                        ->maxLength(255)
+                        ->columnSpan(['sm' => 3, 'md' => 1]),
+                ])->columns(['sm' => 3]),
             ]);
     }
 
@@ -123,8 +150,8 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('device_image')
                     ->label('Imagem'),
-                Tables\Columns\TextColumn::make('device_name')
-                    ->label('Dispositivo')
+                Tables\Columns\TextColumn::make('device_model')
+                    ->label('Modelo')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('customer_name')

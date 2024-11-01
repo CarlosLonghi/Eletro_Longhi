@@ -31,6 +31,7 @@ class Service extends Model
     {
         return [
             'status' => ServiceStatus::class,
+            'device_accessories' => 'array',
         ];
     }
 }

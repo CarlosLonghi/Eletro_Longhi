@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Device;
 use Illuminate\Database\Migrations\Migration;
@@ -20,7 +21,9 @@ return new class extends Migration
             $table->string('customer_email')->nullable();
             $table->string('customer_phone');
 
-            $table->string('device_name');
+            $table->foreignIdFor(Brand::class, 'brand_id');
+            $table->string('device_model');
+            $table->json('device_accessories')->nullable();
             $table->string('device_description')->nullable();
             $table->string('device_image');
             $table->foreignIdFor(Category::class, 'category_id');
