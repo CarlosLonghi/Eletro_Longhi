@@ -120,6 +120,10 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('device_image')
                     ->label('Imagem'),
+                Tables\Columns\TextColumn::make('brand.name')
+                    ->label('Marca')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('device_model')
                     ->label('Modelo')
                     ->searchable(),

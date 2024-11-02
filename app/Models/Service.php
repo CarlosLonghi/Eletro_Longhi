@@ -23,6 +23,16 @@ class Service extends Model
     }
 
     /**
+     * Get the brand associated with the service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    /**
      * Get the casts array.
      *
      * @return array<string, string>
