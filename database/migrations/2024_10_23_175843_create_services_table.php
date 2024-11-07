@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('device_model');
             $table->json('device_accessories')->nullable();
             $table->string('device_description')->nullable();
-            $table->string('device_image');
+            $table->json('device_images')->nullable();
             $table->foreignIdFor(Category::class, 'category_id');
 
             $table->decimal('price', 10, 2);

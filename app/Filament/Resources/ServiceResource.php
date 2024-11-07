@@ -59,7 +59,7 @@ class ServiceResource extends Resource
                         ->maxLength(255)
                         ->required(),
                     Forms\Components\TextInput::make('customer_email')
-                        ->label('Email')
+                        ->label('Email (Opcional)')
                         ->placeholder('Digite o email')
                         ->email()
                         ->maxLength(255)
@@ -98,17 +98,20 @@ class ServiceResource extends Resource
                             'others' => 'Outros (informe na descrição)',
                         ])
                         ->columnSpan(['sm' => 3, 'md' => 1]),
-                    Forms\Components\FileUpload::make('device_image')
-                        ->label('Foto')
-                        ->image()
-                        ->required()
-                        ->columnSpan(['sm' => 3, 'md' => 1]),
                     Forms\Components\Textarea::make('device_description')
-                        ->label('Descrição')
+                        ->label('Descrição (Opcional)')
                         ->placeholder('Informações adicionais sobre o aparelho ou acessórios...')
                         ->rows(4)
                         ->autosize()
                         ->maxLength(255)
+                        ->columnSpan(['sm' => 3, 'md' => 1]),
+                    Forms\Components\FileUpload::make('device_images')
+                        ->label('Foto (Opcional)')
+                        ->image()
+                        ->multiple()
+                        ->maxFiles(5)
+                        ->openable()
+                        ->maxSize(2000)
                         ->columnSpan(['sm' => 3, 'md' => 1]),
                 ])->columns(['sm' => 3]),
             ]);
@@ -118,8 +121,6 @@ class ServiceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('device_image')
-                    ->label('Imagem'),
                 Tables\Columns\TextColumn::make('brand.name')
                     ->label('Marca')
                     ->searchable()
