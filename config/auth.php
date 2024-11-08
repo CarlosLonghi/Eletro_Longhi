@@ -112,4 +112,21 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the credentials for the admin user. These credentials
+    | are used to access the admin interface and should be stored securely
+    | in your environment file. Ensure the password is strong and not easily
+    | guessable.
+    |
+    */
+
+    'admin' => [
+        'name' => env('ADMIN_NAME', 'admin'),
+        'email' => env('ADMIN_EMAIL', 'admin@localhost'),
+        'password' => env('ADMIN_PASSWORD', 'admin'),
+    ],
 ];
