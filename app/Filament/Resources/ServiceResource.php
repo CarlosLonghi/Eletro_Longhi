@@ -111,7 +111,8 @@ class ServiceResource extends Resource
                         ->multiple()
                         ->maxFiles(5)
                         ->openable()
-                        ->maxSize(2000)
+                        ->optimize('webp')
+                        ->resize(50)
                         ->columnSpan(['sm' => 3, 'md' => 1]),
                 ])->columns(['sm' => 3]),
             ]);
