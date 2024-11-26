@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
-use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Service;
@@ -71,8 +70,6 @@ class ServiceResource extends Resource
                         ->label('Marca')
                         ->placeholder('Selecione uma marca')
                         ->options(Brand::all()->pluck('name', 'id'))
-                        ->selectablePlaceholder(false)
-                        ->searchable()
                         ->required()
                         ->columnSpan(['sm' => 1, 'md' => 1]),
                     Forms\Components\TextInput::make('device_model')
