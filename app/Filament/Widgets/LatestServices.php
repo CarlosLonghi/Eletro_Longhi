@@ -13,15 +13,20 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class LatestServices extends BaseWidget
 {
     protected static ?string $heading = 'Serviços Recentes';
-
     protected static ?int $sort = 4;
-
     protected int | string | array $columnSpan = 'full';
+
+    public ?string $statusFilter = null;
 
     public function table(Table $table): Table
     {
+        $filter = request()->query('statusFilter');
+
         return $table
-            ->query(ServiceResource::getEloquentQuery())
+            ->query(
+                ServiceResource::getEloquentQuery()
+                    ->when($filter, fn ($q) => $q->where('status', $filter))
+            )
             ->defaultPaginationPageOption(6)
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -65,6 +70,7 @@ class LatestServices extends BaseWidget
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options(ServiceStatus::class)
+                    ->default($filter)
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

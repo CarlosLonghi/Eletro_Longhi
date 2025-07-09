@@ -17,20 +17,23 @@ class StatsOverview extends BaseWidget
             ->pluck('total', 'status')
             ->toArray();
 
-        $stats = [];
+        // qual é o prefixo do seu painel? (default em config/filament.php é "admin")
+        $panelPath = config('filament.path', 'admin');
 
-        foreach (ServiceStatus::cases() as $status) {
-            $total = $counts[$status->value] ?? 0;
-
-            if ($total > 0) {
-                $stats[] = Stat::make('', $total)
-                    ->description($status->getLabel())
-                    ->descriptionIcon($this->getIconForStatus($status))
-                    ->color($this->getColorForStatus($status));
-            }
-        }
-
-        return $stats;
+        return collect(ServiceStatus::cases())
+            ->filter(fn (ServiceStatus $status) => ($counts[$status->value] ?? 0) > 0)
+            ->map(fn (ServiceStatus $status): Stat => Stat::make('', $counts[$status->value])
+                ->description($status->getLabel())
+                ->descriptionIcon($this->getIconForStatus($status))
+                ->color($this->getColorForStatus($status))
+                // monta o URL “/admin?statusFilter=...”
+                ->url(
+                    url($panelPath)
+                    . '?statusFilter='
+                    . $status->value
+                )
+            )
+            ->toArray();
     }
 
     private function getIconForStatus(ServiceStatus $status): string
